@@ -4,3 +4,7 @@ models/**/*
 *.pytest_cache
 *.model
 *.vocab
+venv
+.idea
+*.xml
+*.iml

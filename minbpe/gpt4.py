@@ -35,7 +35,7 @@ def recover_merges(mergeable_ranks):
     merges = {}
     for token, rank in mergeable_ranks.items():
         if len(token) == 1:
-            continue # skip raw bytes
+            continue  # skip raw bytes
         pair = tuple(bpe(mergeable_ranks, token, max_rank=rank))
         assert len(pair) == 2
         # recover the integer ranks of the pair
@@ -45,6 +45,7 @@ def recover_merges(mergeable_ranks):
 
     return merges
 
+
 GPT4_SPLIT_PATTERN = r"""'(?i:[sdmt]|ll|ve|re)|[^\r\n\p{L}\p{N}]?+\p{L}+|\p{N}{1,3}| ?[^\s\p{L}\p{N}]++[\r\n]*|\s*[\r\n]|\s+(?!\S)|\s+"""
 GPT4_SPECIAL_TOKENS = {
     '<|endoftext|>': 100257,
@@ -53,6 +54,7 @@ GPT4_SPECIAL_TOKENS = {
     '<|fim_suffix|>': 100260,
     '<|endofprompt|>': 100276
 }
+
 
 class GPT4Tokenizer(RegexTokenizer):
     """Lightweight wrapper on RegexTokenizer that matches GPT-4's tokenizer."""

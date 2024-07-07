@@ -20,6 +20,7 @@ def main():
     for TokenizerClass, name in zip([BasicTokenizer, RegexTokenizer], ["basic", "regex"]):
         # construct the Tokenizer object and kick off verbose training
         tokenizer = TokenizerClass()
+        # vocab_size = 512
         tokenizer.train(text, 512, verbose=True)
         # writes two files in the models directory: name.model, and name.vocab
         prefix = os.path.join("models", name)

@@ -19,6 +19,7 @@ class BasicTokenizer(Tokenizer):
 
     def train(self, text, vocab_size, verbose=False):
         assert vocab_size >= 256
+        # 合并次数
         num_merges = vocab_size - 256
 
         # input text preprocessing

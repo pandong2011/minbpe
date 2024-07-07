@@ -27,6 +27,7 @@ def merge(ids, pair, idx):
     """
     In the list of integers (ids), replace all consecutive occurrences
     of pair with the new integer token idx
+    # 在ids中用idx替换pair, idx应该不属于ids, 即idx属于扩展词汇
     Example: ids=[1, 2, 3, 1, 2], pair=(1, 2), idx=4 -> [4, 3, 4]
     """
     newids = []

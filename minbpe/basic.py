@@ -28,13 +28,16 @@ class BasicTokenizer(Tokenizer):
         # iteratively merge the most common pairs to create new tokens
         merges = {}  # (int, int) -> int
         vocab = {idx: bytes([idx]) for idx in range(256)}  # int -> bytes
+        # 新增token合并次数的循环
         for i in range(num_merges):
             # count up the number of times every consecutive pair appears
             stats = get_stats(ids)
             # find the pair with the highest count
             pair = max(stats, key=stats.get)
+            # 创造新的token
             # mint a new token: assign it the next available id
             idx = 256 + i
+            # 用idx替代pair
             # replace all occurrences of pair in ids with idx
             ids = merge(ids, pair, idx)
             # save the merge

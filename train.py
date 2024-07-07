@@ -10,6 +10,7 @@ from minbpe import BasicTokenizer, RegexTokenizer
 
 def main():
     # open some text and train a vocab of 512 tokens
+    # extend 256 token
     text = open("tests/taylorswift.txt", "r", encoding="utf-8").read()
 
     # create a directory for models, so we don't pollute the current directory

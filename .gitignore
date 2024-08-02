@@ -6,6 +6,6 @@ models/**/*
 *.vocab
 venv
 .idea
-.idea/**
+.idea/*/**
 *.xml
 *.iml

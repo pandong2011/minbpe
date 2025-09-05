@@ -20,34 +20,63 @@ class BasicTokenizer(Tokenizer):
     def train(self, text, vocab_size, verbose=False):
         assert vocab_size >= 256
         # 合并次数
+        # 新增词表词汇的大小
         num_merges = vocab_size - 256
 
         # input text preprocessing
         text_bytes = text.encode("utf-8")  # raw bytes
+        # 获取encode后的字节序列长度
         ids = list(text_bytes)  # list of integers in range 0..255
 
-        # iteratively merge the most common pairs to create new tokens
+        # iteratively merge the most common appear pairs to create new tokens
+        # 编码时用
+        # 词表本表 字节对 -> 编码后的索引
+        # 如(101, 32) -> 256
+        # 如(44, 32) -> 257
+        # 如(100, 32) -> 258
         merges = {}  # (int, int) -> int
+        # 解码时用
+        # {索引: 字符}
+        # {101:e, 100:d, 50:2 ... }
+        # 后续词表
+        # {索引: 字符对}
+        # {101:e, 100:d, 50:2, 261:20, 263:in, 264:on  ...  }
         vocab = {idx: bytes([idx]) for idx in range(256)}  # int -> bytes
-        # 新增token合并次数的循环
+        # 合并新增token
         for i in range(num_merges):
             # count up the number of times every consecutive pair appears
+            # count encode后的字节序列中的 连续pair(相当于two-gram)对
             stats = get_stats(ids)
             # find the pair with the highest count
+            # 获取出现频次最高的 pair对
             pair = max(stats, key=stats.get)
-            # 创造新的token
+            # 新的token id
             # mint a new token: assign it the next available id
             idx = 256 + i
-            # 用idx替代pair
+            # 用idx替代 该pair对
             # replace all occurrences of pair in ids with idx
+            # 在encode后的字节序列中，用新的idx替代该pair对来缩短ids的长度
             ids = merge(ids, pair, idx)
             # save the merge
+            # 将字节对加入词表
+            # 编码时用
             merges[pair] = idx
+            # 解码时用
+            # 🌟vocab[pair[0]] + vocab[pair[1]] 是解码后的字符拼接不是数字相加🌟
             vocab[idx] = vocab[pair[0]] + vocab[pair[1]]
             # prints
             # occurrences: 出现
+            """
+            # e空格: 用256表示
+            merge 1/256: (101, 32) -> 256; pair (b'e ') had 2981 occurrences
+            # 逗号空格: 用257表示
+            merge 2/256: (44, 32) -> 257; pair (b', ') had 2961 occurrences
+            # d空格: 用258表示
+            merge 3/256: (100, 32) -> 258; pair (b'd ') had 2617 occurrences
+            ...
+            """
             if verbose:
-                print(f"merge {i + 1}/{num_merges}: {pair} -> {idx} ({vocab[idx]}) had {stats[pair]} occurrences")
+                print(f"merge {i + 1}/{num_merges}: {pair} -> {idx}; pair ({vocab[idx]}) had {stats[pair]} occurrences")
 
         # save class variables
         self.merges = merges  # used in encode()
